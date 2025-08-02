@@ -59,6 +59,8 @@ yarn add @superduperdot/brale-sdk
 
 ## Quick Start
 
+> 💡 **See the [`examples/`](./examples/) directory for complete working examples.**
+
 ```typescript
 import { BraleClient } from '@superduperdot/brale-sdk';
 

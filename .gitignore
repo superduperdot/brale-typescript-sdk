@@ -37,9 +37,8 @@ Thumbs.db
 # Lock files (not needed for libraries)
 package-lock.json
 
-# Test and demo files (keep in repo but don't publish)
-test-*.js
-demo-*.js
+# Examples directory is included in repo
+# Individual example files are tracked
 
 # Logs
 *.log
