@@ -1,6 +1,15 @@
 /**
  * Real authentication test with actual Brale credentials
  * This verifies the SDK works with the live API
+ * 
+ * SECURITY: This file uses environment variables to load credentials.
+ * Create a .env file with your credentials:
+ * 
+ * BRALE_CLIENT_ID=your-client-id
+ * BRALE_CLIENT_SECRET=your-client-secret
+ * BRALE_API_URL=https://api.brale.xyz
+ * 
+ * DO NOT commit real credentials to version control!
  */
 
 const { BraleClient, ValueType, TransferType } = require('./dist/cjs/index.js');
@@ -8,12 +17,12 @@ const { BraleClient, ValueType, TransferType } = require('./dist/cjs/index.js');
 async function testRealAuth() {
   console.log('🔐 Testing Brale SDK with Real Authentication...\n');
 
-  // Real credentials (DO NOT commit to version control)
+  // Real credentials (loaded from environment variables)
   const client = new BraleClient({
-    clientId: '***REMOVED***',
-    clientSecret: '***REMOVED***',
+    clientId: process.env.BRALE_CLIENT_ID || 'your-client-id',
+    clientSecret: process.env.BRALE_CLIENT_SECRET || 'your-client-secret',
     // Use production or sandbox environment
-    baseUrl: 'https://api.brale.xyz', // Adjust based on environment
+    baseUrl: process.env.BRALE_API_URL || 'https://api.brale.xyz',
   });
 
   try {
