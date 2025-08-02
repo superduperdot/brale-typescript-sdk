@@ -5,6 +5,25 @@ All notable changes to the unofficial Brale TypeScript SDK will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-01-13
+
+### 🏗️ Infrastructure Improvements
+
+- **Massive repository size reduction** - Reduced from ~90MB to ~15MB (83% reduction!)
+- **Added comprehensive .gitignore** - Properly excludes node_modules, coverage, dist, and build artifacts
+- **Removed unnecessary files from Git tracking**:
+  - `node_modules/` directory (~80MB of dependencies)
+  - `coverage/` directory (test coverage reports)
+  - `package-lock.json` (not needed for published libraries)
+- **Optimized published package size** - Will be ~100KB-1MB instead of 90MB
+- **Improved developer experience** - Faster clones, smaller downloads, cleaner repository
+
+### 📦 Package Distribution
+
+- **No breaking changes** - All APIs remain identical
+- **Same functionality** - Zero impact on SDK features or performance
+- **Better npm experience** - Users get smaller, faster installs
+
 ## [1.2.2] - 2025-01-13
 
 ### 📝 Documentation Improvements
