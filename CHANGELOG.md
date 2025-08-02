@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Same functionality** - Zero impact on SDK features or performance
 - **Better npm experience** - Users get smaller, faster installs
 
+### 📄 Legal & Licensing
+
+- **Added MIT License** - Standard open-source license for clear usage terms
+- **License included in package** - LICENSE file will be published with the SDK
+- **Developer-friendly terms** - Permissive license allowing commercial and personal use
+
 ## [1.2.2] - 2025-01-13
 
 ### 📝 Documentation Improvements
