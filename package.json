@@ -35,9 +35,7 @@
     "type": "git",
     "url": "git+https://github.com/superduperdot/brale-typescript-sdk.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
+
   "keywords": [
     "brale",
     "stablecoin",

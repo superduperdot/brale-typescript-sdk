@@ -6,7 +6,7 @@
 
 This SDK provides type-safe access to Brale's stablecoin issuance platform, enabling developers to integrate accounts, transfers, addresses, and automation flows with precision and excellent developer experience.
 
-[![npm version](https://badge.fury.io/js/@brale/sdk.svg)](https://badge.fury.io/js/@brale/sdk)
+[![npm version](https://badge.fury.io/js/@superduperdot/brale-sdk.svg)](https://badge.fury.io/js/@superduperdot/brale-sdk)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -46,21 +46,21 @@ This SDK provides type-safe access to Brale's stablecoin issuance platform, enab
 ## Installation
 
 ```bash
-npm install @brale/sdk
-
-# Note: This installs the unofficial community SDK
+npm install @superduperdot/brale-sdk
 ```
 
 Or with yarn:
 
 ```bash
-yarn add @brale/sdk
+yarn add @superduperdot/brale-sdk
 ```
+
+> **Note**: This is an unofficial community SDK, not officially supported by Brale.
 
 ## Quick Start
 
 ```typescript
-import { BraleClient } from '@brale/sdk';
+import { BraleClient } from '@superduperdot/brale-sdk';
 
 // Initialize the client
 const client = new BraleClient({
@@ -167,7 +167,7 @@ const transfer = await client.transfers.create('account-id', {
 The SDK uses OAuth 2.0 Client Credentials flow for authentication. Get your credentials from the [Brale Dashboard](https://app.brale.xyz):
 
 ```typescript
-import { BraleClient } from '@brale/sdk';
+import { BraleClient } from '@superduperdot/brale-sdk';
 
 const client = new BraleClient({
   clientId: process.env.BRALE_CLIENT_ID!,
@@ -511,7 +511,7 @@ BRALE_AUTH_URL=https://auth.brale.xyz
 ```
 
 ```typescript
-import { BraleClient } from '@brale/sdk';
+import { BraleClient } from '@superduperdot/brale-sdk';
 
 const client = new BraleClient({
   clientId: process.env.BRALE_CLIENT_ID!,
@@ -532,7 +532,7 @@ import {
   BraleValidationError, 
   BraleRateLimitError,
   BraleNetworkError 
-} from '@brale/sdk';
+} from '@superduperdot/brale-sdk';
 
 try {
   const transfer = await client.transfers.create('account-id', {
@@ -576,7 +576,7 @@ const firstPage = await client.transfers.list('account-id', {}, { limit: 20, off
 const secondPage = await client.transfers.list('account-id', {}, { limit: 20, offset: 20 });
 
 // Using pagination iterator
-import { PaginatedIterator } from '@brale/sdk';
+import { PaginatedIterator } from '@superduperdot/brale-sdk';
 
 const iterator = new PaginatedIterator(
   (params) => client.transfers.list('account-id', {}, params),
@@ -602,7 +602,7 @@ console.log(`Total transfers: ${allTransfers.length}`);
 The SDK uses `decimal.js` for all monetary calculations to ensure precision:
 
 ```typescript
-import { Amount } from '@brale/sdk';
+import { Amount } from '@superduperdot/brale-sdk';
 
 // Create amounts
 const amount1 = new Amount('100.50', 'SBC');
@@ -645,11 +645,11 @@ For testing your application that uses the SDK:
 // jest.config.js
 module.exports = {
   moduleNameMapping: {
-    '^@brale/sdk$': '<rootDir>/__mocks__/@brale/sdk.ts',
+    '^@superduperdot/brale-sdk$': '<rootDir>/__mocks__/@superduperdot/brale-sdk.ts',
   },
 };
 
-// __mocks__/@brale/sdk.ts
+// __mocks__/@superduperdot/brale-sdk.ts
 export const BraleClient = jest.fn().mockImplementation(() => ({
   accounts: {
     list: jest.fn().mockResolvedValue({ data: [] }),
