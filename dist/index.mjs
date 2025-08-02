@@ -6,30 +6,30 @@
  *
  * Note: This is an unofficial, community-developed SDK not endorsed by Brale.
  */
-export { BraleClient } from './esm/client.js';
-export { BraleAuth } from './esm/auth.js';
+export { BraleClient } from './client';
+export { BraleAuth } from './auth';
 // Models
-export * from './esm/models/account.js';
-export * from './esm/models/address.js';
-export * from './esm/models/amount.js';
-export * from './esm/models/transfer.js';
-export * from './esm/models/automation.js';
+export * from './models/account';
+export * from './models/address';
+export * from './models/amount';
+export * from './models/transfer';
+export * from './models/automation';
 // Services
-export { AccountsService } from './esm/services/accounts.js';
-export { AddressesService } from './esm/services/addresses.js';
-export { TransfersService } from './esm/services/transfers.js';
-export { AutomationsService } from './esm/services/automations.js';
+export { AccountsService } from './services/accounts';
+export { AddressesService } from './services/addresses';
+export { TransfersService } from './services/transfers';
+export { AutomationsService } from './services/automations';
 // Utilities
-export * from './esm/utils/retry.js';
-export * from './esm/utils/idempotency.js';
-export * from './esm/utils/pagination.js';
+export * from './utils/retry';
+export * from './utils/idempotency';
+export * from './utils/pagination';
 // Types and errors
-export * from './esm/types/common.js';
-export * from './esm/errors/api-error.js';
+export * from './types/common';
+export * from './errors/api-error';
 // Re-export Value Types for convenience
-export { ValueType, TransferType, Network } from './esm/types/common.js';
+export { ValueType, TransferType, Network } from './types/common';
 // Re-export Security and Rotation utilities
-export { CredentialValidator } from './esm/security/credential-validator.js';
-export { CredentialRotationManager, MockRotationProvider } from './esm/security/credential-rotation.js';
-export { SecureTokenStorage, defaultTokenStorage } from './esm/security/token-storage.js';
+export { CredentialValidator } from './security/credential-validator';
+export { CredentialRotationManager, MockRotationProvider } from './security/credential-rotation';
+export { SecureTokenStorage, defaultTokenStorage } from './security/token-storage';
 //# sourceMappingURL=index.js.map
