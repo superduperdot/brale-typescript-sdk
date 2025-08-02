@@ -4,7 +4,7 @@
  */
 
 // Import the SDK
-const { BraleClient, ValueType, TransferType } = require('./dist/cjs/index.js');
+const { BraleClient, ValueType, TransferType } = require('../dist/cjs/index.js');
 
 console.log('🧪 Testing Brale SDK Functionality...\n');
 

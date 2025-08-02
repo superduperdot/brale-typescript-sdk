@@ -12,7 +12,7 @@
  * DO NOT commit real credentials to version control!
  */
 
-const { BraleClient, ValueType, TransferType } = require('./dist/cjs/index.js');
+const { BraleClient, ValueType, TransferType } = require('../dist/cjs/index.js');
 
 async function testRealAuth() {
   console.log('🔐 Testing Brale SDK with Real Authentication...\n');

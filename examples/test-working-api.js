@@ -2,15 +2,15 @@
  * Test SDK with working health endpoint to prove API calls work
  */
 
-const { BraleClient } = require('./dist/cjs/index.js');
+const { BraleClient } = require('../dist/cjs/index.js');
 const axios = require('axios');
 
 async function testWorkingAPI() {
   console.log('🔧 Testing SDK with working health endpoint...\n');
 
   const client = new BraleClient({
-    clientId: '***REMOVED***',
-    clientSecret: '***REMOVED***',
+    clientId: process.env.BRALE_CLIENT_ID || 'your-client-id',
+    clientSecret: process.env.BRALE_CLIENT_SECRET || 'your-client-secret',
   });
 
   try {

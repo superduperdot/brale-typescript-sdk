@@ -2,14 +2,14 @@
  * Test only the authentication part of the SDK
  */
 
-const { BraleClient } = require('./dist/cjs/index.js');
+const { BraleClient } = require('../dist/cjs/index.js');
 
 async function testAuthOnly() {
   console.log('🔐 Testing Brale SDK Authentication Only...\n');
 
   const client = new BraleClient({
-    clientId: '***REMOVED***',
-    clientSecret: '***REMOVED***',
+    clientId: process.env.BRALE_CLIENT_ID || 'your-client-id',
+    clientSecret: process.env.BRALE_CLIENT_SECRET || 'your-client-secret',
   });
 
   try {

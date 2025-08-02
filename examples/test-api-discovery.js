@@ -8,8 +8,8 @@ async function discoverEndpoints() {
   console.log('🔍 Discovering Brale API endpoints...\n');
 
   const credentials = {
-    clientId: '***REMOVED***',
-    clientSecret: '***REMOVED***'
+    clientId: process.env.BRALE_CLIENT_ID || 'your-client-id',
+    clientSecret: process.env.BRALE_CLIENT_SECRET || 'your-client-secret'
   };
 
   try {
