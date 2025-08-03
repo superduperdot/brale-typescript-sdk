@@ -6,7 +6,6 @@
 
 This SDK provides type-safe access to Brale's stablecoin issuance platform, enabling developers to integrate accounts, transfers, addresses, and automation flows with precision and excellent developer experience.
 
-[![npm version](https://img.shields.io/npm/v/@superduperdot/brale-sdk.svg)](https://www.npmjs.com/package/@superduperdot/brale-sdk)
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
