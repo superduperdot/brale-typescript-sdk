@@ -24,6 +24,7 @@ This SDK provides type-safe access to Brale's stablecoin issuance platform, enab
 - [Configuration](#configuration)
 - [Error Handling](#error-handling)
 - [Pagination](#pagination)
+- [API Documentation](#api-documentation)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
@@ -669,6 +670,36 @@ export const BraleClient = jest.fn().mockImplementation(() => ({
   // ... other services
 }));
 ```
+
+## API Documentation
+
+Complete API documentation is generated using TypeDoc and provides detailed information about all classes, interfaces, and methods.
+
+### Generate Documentation
+
+```bash
+# Generate API documentation
+npm run docs
+
+# Generate and serve documentation locally
+npm run docs:serve
+```
+
+The documentation will be generated in `docs/api/` and can be viewed by opening `docs/api/index.html` in your browser.
+
+### Online Documentation
+
+The latest API documentation is available online at: [API Reference](https://superduperdot.github.io/brale-typescript-sdk/)
+
+### Key Documentation Sections
+
+- **Client**: Main `BraleClient` class and configuration
+- **Services**: Account, Transfer, Address, and Automation services
+- **Models**: Data models for accounts, transfers, addresses, etc.
+- **Security**: Authentication, credential rotation, and token storage
+- **Utilities**: Retry logic, pagination, and idempotency helpers
+- **Types**: TypeScript interfaces and type definitions
+- **Errors**: Custom error classes and error handling
 
 ## Contributing
 

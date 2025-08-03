@@ -163,9 +163,7 @@ export class SecureTokenStorage {
       throw new Error('Invalid encrypted data format');
     }
 
-    const [ivHex, authTagHex, encrypted] = parts;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const iv = Buffer.from(ivHex, 'hex');
+    const [_ivHex, authTagHex, encrypted] = parts;
     const authTag = Buffer.from(authTagHex, 'hex');
     
     const decipher = crypto.createDecipher(this.algorithm, this.options.encryptionKey);

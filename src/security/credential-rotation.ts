@@ -74,7 +74,7 @@ const DEFAULT_ROTATION_CONFIG: Required<RotationConfig> = {
 export class CredentialRotationManager extends EventEmitter {
   private readonly config: Required<RotationConfig>;
   private currentMetadata: CredentialMetadata | null = null;
-  private checkTimer: NodeJS.Timeout | null = null;
+  private checkTimer: ReturnType<typeof setTimeout> | null = null;
   private rotationProvider: RotationProvider | null = null;
 
   constructor(config: RotationConfig = {}) {
@@ -368,13 +368,11 @@ export class MockRotationProvider implements RotationProvider {
     return this.newCredentials;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async revokeCredentials(_clientId: string): Promise<void> {
     // Mock implementation - in real provider this would revoke the credentials
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async validateCredentials(_clientId: string, _clientSecret: string): Promise<boolean> {
     // Mock implementation - always returns true
     return Promise.resolve(true);

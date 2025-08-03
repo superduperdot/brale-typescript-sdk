@@ -8,6 +8,9 @@ yarn-error.log*
 dist/
 coverage/
 
+# Generated documentation
+docs/api/
+
 # Environment files
 .env
 .env.local

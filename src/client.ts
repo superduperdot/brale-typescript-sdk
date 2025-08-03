@@ -203,8 +203,7 @@ export class BraleClient {
    */
   getConfig(): Omit<Required<BraleConfig>, 'clientSecret'> {
     // Return config without sensitive information
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { clientSecret: _, ...safeConfig } = this.config;
+    const { clientSecret: _clientSecret, ...safeConfig } = this.config;
     return safeConfig;
   }
 

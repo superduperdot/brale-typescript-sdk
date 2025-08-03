@@ -179,7 +179,7 @@ describe('Real API Integration Tests', () => {
 
       try {
         await client.accounts.get('invalid-account-id');
-        fail('Should have thrown an error for invalid account ID');
+        throw new Error('Should have thrown an error for invalid account ID');
       } catch (error) {
         expect(error).toBeDefined();
         console.log('✅ Invalid account ID error handled correctly');
