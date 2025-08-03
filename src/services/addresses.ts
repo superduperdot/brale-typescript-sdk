@@ -11,9 +11,16 @@ import type {
   AddressValidation,
   CreateExternalAddressRequest,
   UpdateAddressRequest,
-  AddressFilters,
   SharableAddress,
 } from '../models/address';
+import type {
+  ApiAddress,
+  AddressListResponse,
+  AddressResponse,
+  CreateAddressRequest,
+  UpdateAddressRequest as ApiUpdateAddressRequest,
+  AddressFilters as ApiAddressFilters,
+} from '../models/api-address';
 import type { Network } from '../types/common';
 import type { PaginationParams, PaginatedResponse, ApiResponse } from '../types/common';
 import { BraleAPIError } from '../errors/api-error';
@@ -30,47 +37,45 @@ export class AddressesService {
   /**
    * List addresses for an account
    * 
-   * @param accountId - The account ID
+   * @param accountId - The account ID (optional - API returns all addresses if not specified)
    * @param filters - Optional filters for the address list
-   * @param pagination - Pagination parameters
-   * @returns Promise resolving to paginated list of addresses
+   * @returns Promise resolving to addresses list response
    */
   async list(
-    accountId: string,
-    filters?: AddressFilters,
-    pagination?: PaginationParams
-  ): Promise<PaginatedResponse<BaseAddress>> {
-    this.validateAccountId(accountId);
+    accountId?: string,
+    filters?: ApiAddressFilters
+  ): Promise<AddressListResponse> {
+    if (accountId) {
+      this.validateAccountId(accountId);
+    }
     
-    const query = {
-      ...createPaginationQuery(pagination || {}),
-      ...this.createFiltersQuery(filters || {}),
-    };
+    const query = this.createFiltersQuery(filters || {});
     
-    const response = await this.httpClient.get<ApiResponse<PaginatedResponse<BaseAddress>>>(
-      `/accounts/${accountId}/addresses`,
+    // The Brale API uses /addresses endpoint, not account-specific
+    const response = await this.httpClient.get<AddressListResponse>(
+      '/addresses',
       { params: query }
     );
     
-    return this.transformAddressesResponse(response.data.data);
+    return response.data;
   }
 
   /**
    * Get a specific address by ID
    * 
-   * @param accountId - The account ID
+   * @param accountId - The account ID (maintained for backward compatibility)
    * @param addressId - The address ID
    * @returns Promise resolving to the address
    */
-  async get(accountId: string, addressId: string): Promise<BaseAddress> {
+  async get(accountId: string, addressId: string): Promise<ApiAddress> {
     this.validateAccountId(accountId);
     this.validateAddressId(addressId);
     
-    const response = await this.httpClient.get<ApiResponse<BaseAddress>>(
-      `/accounts/${accountId}/addresses/${addressId}`
+    const response = await this.httpClient.get<AddressResponse>(
+      `/addresses/${addressId}`
     );
     
-    return this.transformAddressResponse(response.data.data);
+    return response.data.data;
   }
 
   /**
@@ -83,19 +88,21 @@ export class AddressesService {
    */
   async listInternal(
     accountId: string,
-    network?: Network,
-    pagination?: PaginationParams
-  ): Promise<PaginatedResponse<InternalAddress>> {
-    const filters: AddressFilters = {
-      type: 'internal' as any,
+    network?: Network
+  ): Promise<AddressListResponse> {
+    const filters: ApiAddressFilters = {
+      type: 'custodial',
       network,
     };
     
-    const addresses = await this.list(accountId, filters, pagination);
+    const addresses = await this.list(accountId, filters);
+    
+    // Filter to only custodial addresses
+    const custodialAddresses = addresses.data.filter(addr => addr.attributes.type === 'custodial');
     
     return {
       ...addresses,
-      data: addresses.data as InternalAddress[],
+      data: custodialAddresses,
     };
   }
 
@@ -109,19 +116,21 @@ export class AddressesService {
    */
   async listExternal(
     accountId: string,
-    filters?: Omit<AddressFilters, 'type'>,
-    pagination?: PaginationParams
-  ): Promise<PaginatedResponse<ExternalAddress>> {
-    const addressFilters: AddressFilters = {
+    filters?: Omit<ApiAddressFilters, 'type'>
+  ): Promise<AddressListResponse> {
+    const addressFilters: ApiAddressFilters = {
       ...filters,
-      type: 'external' as any,
+      type: 'externally-owned',
     };
     
-    const addresses = await this.list(accountId, addressFilters, pagination);
+    const addresses = await this.list(accountId, addressFilters);
+    
+    // Filter to only externally-owned addresses
+    const externalAddresses = addresses.data.filter(addr => addr.attributes.type === 'externally-owned');
     
     return {
       ...addresses,
-      data: addresses.data as ExternalAddress[],
+      data: externalAddresses,
     };
   }
 
@@ -132,7 +141,7 @@ export class AddressesService {
    * @param request - External address creation request
    * @returns Promise resolving to the created external address
    */
-  async createExternal(accountId: string, request: CreateExternalAddressRequest): Promise<ExternalAddress> {
+  async createExternal(accountId: string, request: CreateExternalAddressRequest): Promise<ApiAddress> {
     this.validateAccountId(accountId);
     this.validateCreateExternalAddressRequest(request);
     
@@ -143,9 +152,12 @@ export class AddressesService {
       type: 'external',
     });
     
-    const response = await this.httpClient.post<ApiResponse<ExternalAddress>>(
-      `/accounts/${accountId}/addresses`,
-      request,
+    const response = await this.httpClient.post<AddressResponse>(
+      '/addresses',
+      {
+        address: request.address,
+        name: request.label,
+      },
       {
         headers: {
           'Idempotency-Key': idempotencyKey,
@@ -153,28 +165,28 @@ export class AddressesService {
       }
     );
     
-    return this.transformAddressResponse(response.data.data) as ExternalAddress;
+    return response.data.data;
   }
 
   /**
    * Update an existing address
    * 
-   * @param accountId - The account ID
+   * @param accountId - The account ID (maintained for backward compatibility)
    * @param addressId - The address ID
    * @param request - Address update request
    * @returns Promise resolving to the updated address
    */
-  async update(accountId: string, addressId: string, request: UpdateAddressRequest): Promise<BaseAddress> {
+  async update(accountId: string, addressId: string, request: ApiUpdateAddressRequest): Promise<ApiAddress> {
     this.validateAccountId(accountId);
     this.validateAddressId(addressId);
     this.validateUpdateAddressRequest(request);
     
-    const response = await this.httpClient.patch<ApiResponse<BaseAddress>>(
-      `/accounts/${accountId}/addresses/${addressId}`,
+    const response = await this.httpClient.patch<AddressResponse>(
+      `/addresses/${addressId}`,
       request
     );
     
-    return this.transformAddressResponse(response.data.data);
+    return response.data.data;
   }
 
   /**
@@ -272,16 +284,18 @@ export class AddressesService {
     address: string,
     network: Network,
     label?: string
-  ): Promise<ExternalAddress> {
+  ): Promise<ApiAddress> {
     // First try to find existing external address
     const existingAddresses = await this.listExternal(accountId, {
-      search: address,
       network,
     });
     
-    const existing = existingAddresses.data.find(addr => 
-      addr.address.toLowerCase() === address.toLowerCase() && addr.network === network
+    // Filter by address manually since search is not supported
+    const matchingAddresses = existingAddresses.data.filter(
+      addr => addr.attributes.address.toLowerCase() === address.toLowerCase()
     );
+    
+    const existing = matchingAddresses.length > 0 ? matchingAddresses[0] : null;
     
     if (existing) {
       return existing;
@@ -360,35 +374,19 @@ export class AddressesService {
   /**
    * Create query parameters from filters
    */
-  private createFiltersQuery(filters: AddressFilters): Record<string, string> {
+  private createFiltersQuery(filters: ApiAddressFilters): Record<string, string> {
     const query: Record<string, string> = {};
     
     if (filters.type) {
       query.type = filters.type;
     }
     
+    if (filters.status) {
+      query.status = filters.status;
+    }
+    
     if (filters.network) {
       query.network = filters.network;
-    }
-    
-    if (filters.verified !== undefined) {
-      query.verified = filters.verified.toString();
-    }
-    
-    if (filters.whitelisted !== undefined) {
-      query.whitelisted = filters.whitelisted.toString();
-    }
-    
-    if (filters.search) {
-      query.search = filters.search;
-    }
-    
-    if (filters.createdAfter) {
-      query.created_after = filters.createdAfter.toISOString();
-    }
-    
-    if (filters.createdBefore) {
-      query.created_before = filters.createdBefore.toISOString();
     }
     
     return query;

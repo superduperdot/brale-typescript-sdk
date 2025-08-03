@@ -31,10 +31,7 @@ describe('Services', () => {
     it('should list accounts', async () => {
       const mockResponse = {
         data: {
-          data: {
-            data: [{ id: 'account-1', name: 'Test Account' }],
-            pagination: { total: 1, limit: 50, offset: 0, hasMore: false },
-          },
+          accounts: ['account-1', 'account-2'],
         },
       };
 
@@ -42,10 +39,9 @@ describe('Services', () => {
 
       const result = await service.list();
 
-      expect(mockAxios.get).toHaveBeenCalledWith('/accounts', {
-        params: {},
-      });
-      expect(result.data).toHaveLength(1);
+      expect(mockAxios.get).toHaveBeenCalledWith('/accounts');
+      expect(result).toHaveLength(2);
+      expect(result[0]).toBe('account-1');
     });
 
     it('should get account by ID', async () => {

@@ -37,7 +37,7 @@ export interface BaseAddress {
  * Internal (custodial) address managed by Brale
  */
 export interface InternalAddress extends BaseAddress {
-  type: AddressType.INTERNAL;
+  type: AddressType.CUSTODIAL;
   
   /** Account ID this address belongs to */
   accountId: string;
@@ -59,7 +59,7 @@ export interface InternalAddress extends BaseAddress {
  * External address for transfers to third parties
  */
 export interface ExternalAddress extends BaseAddress {
-  type: AddressType.EXTERNAL;
+  type: AddressType.EXTERNALLY_OWNED;
   
   /** Whether the address has been verified */
   verified: boolean;

@@ -3,6 +3,7 @@
  */
 
 export enum Network {
+  // EVM Mainnet Networks
   ETHEREUM = 'ethereum',
   BASE = 'base',
   POLYGON = 'polygon',
@@ -10,9 +11,27 @@ export enum Network {
   OPTIMISM = 'optimism',
   AVALANCHE = 'avalanche',
   CELO = 'celo',
-  SOLANA = 'solana',
   BNB = 'bnb',
+  VICTION = 'viction',
+  CLASSIC = 'classic',
+  
+  // EVM Testnet Networks
+  SEPOLIA = 'sepolia',
+  BASE_SEPOLIA = 'base_sepolia',
+  FUJI = 'fuji',
+  MORDOR = 'mordor',
+  ALFAJORES = 'alfajores',
+  AMOY = 'amoy',
+  
+  // Non-EVM Networks
+  SOLANA = 'solana',
+  SOLANA_DEVNET = 'solana_devnet',
+  STELLAR = 'stellar',
+  STELLAR_TESTNET = 'stellar_testnet',
+  HEDERA = 'hedera',
+  COREUM = 'coreum',
   CANTON = 'canton',
+  CANTON_TESTNET = 'canton_testnet',
 }
 
 export enum ValueType {
@@ -47,8 +66,8 @@ export enum TransferStatus {
 }
 
 export enum AddressType {
-  INTERNAL = 'internal',
-  EXTERNAL = 'external',
+  CUSTODIAL = 'custodial',
+  EXTERNALLY_OWNED = 'externally-owned',
 }
 
 /**

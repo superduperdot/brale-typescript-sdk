@@ -24,18 +24,12 @@ export class AccountsService {
   /**
    * List all accounts for the authenticated user
    * 
-   * @param pagination - Pagination parameters
-   * @returns Promise resolving to paginated list of accounts
+   * @returns Promise resolving to array of account IDs
+   * @note The Brale API returns a simple array of account IDs, not a paginated response
    */
-  async list(pagination?: PaginationParams): Promise<PaginatedResponse<Account>> {
-    const query = createPaginationQuery(pagination || {});
-    
-    const response = await this.httpClient.get<ApiResponse<PaginatedResponse<Account>>>(
-      '/accounts',
-      { params: query }
-    );
-    
-    return this.transformAccountsResponse(response.data.data);
+  async list(): Promise<string[]> {
+    const response = await this.httpClient.get<{ accounts: string[] }>('/accounts');
+    return response.data.accounts;
   }
 
   /**
@@ -150,13 +144,13 @@ export class AccountsService {
    * 
    * @returns Promise resolving to the first account
    */
-  async getFirst(): Promise<Account> {
+  async getFirst(): Promise<string> {
     const accounts = await retry(async () => {
-      const response = await this.list({ limit: 1 });
-      if (response.data.length === 0) {
+      const accountIds = await this.list();
+      if (accountIds.length === 0) {
         throw new BraleAPIError('No accounts found', 404, 'NO_ACCOUNTS_FOUND');
       }
-      return response.data;
+      return accountIds;
     });
     
     return accounts[0]!;

@@ -17,6 +17,23 @@ export * from './models/amount';
 export * from './models/transfer';
 export * from './models/automation';
 
+// Export JSON:API address models with explicit names to avoid conflicts
+export {
+  ApiAddress,
+  AddressListResponse,
+  AddressResponse,
+  AddressAttributes,
+  SupportedChain,
+  CreateAddressRequest as ApiCreateAddressRequest,
+  UpdateAddressRequest as ApiUpdateAddressRequest,
+  AddressFilters as ApiAddressFilters,
+  isCustodialAddress,
+  isExternalAddress,
+  supportsNetwork,
+  getMainnetChains,
+  getTestnetChains
+} from './models/api-address';
+
 // Services
 export { AccountsService } from './services/accounts';
 export { AddressesService } from './services/addresses';
