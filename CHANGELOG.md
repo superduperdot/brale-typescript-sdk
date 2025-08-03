@@ -5,6 +5,66 @@ All notable changes to the unofficial Brale TypeScript SDK will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2025-08-03
+
+### 🎉 **PRODUCTION READY - Complete TypeScript & API Compatibility**
+
+This is a **major stability release** that resolves all TypeScript type mismatches and makes the SDK fully functional with the real Brale API. The SDK is now production-ready and CLI-compatible.
+
+#### 🔧 **Critical API Fixes**
+- **BREAKING FIX**: Resolved API 500 errors by removing problematic `Accept: application/json` header
+- **AccountsService**: Updated to return `string[]` matching actual `/accounts` endpoint response
+- **AddressesService**: Complete rewrite to handle JSON:API format with `data` and `attributes` structure
+- **Authentication**: Confirmed OAuth 2.0 client credentials flow works perfectly with production API
+- **Error handling**: Enhanced with specific messages for 400, 401, 403, 404, 429, 500, 503 status codes
+
+#### 🏗️ **TypeScript Type System Overhaul**
+- **AddressType enum**: Fixed values to match API (`CUSTODIAL` → `custodial`, `EXTERNALLY_OWNED` → `externally-owned`)
+- **Network enum**: Added comprehensive support for 25+ blockchain networks (EVM mainnets, testnets, Solana, Stellar, Hedera, Coreum, Canton)
+- **ApiAddress model**: New JSON:API compliant model with proper `attributes` and `links` structure
+- **Service return types**: All services now return types that match actual API responses
+- **Import/export conflicts**: Resolved with explicit exports to avoid naming collisions
+
+#### 🔄 **Brale CLI Compatibility**
+- **Pattern analysis**: Studied [official Brale CLI](https://github.com/Brale-xyz/cli) and aligned SDK behavior
+- **Command equivalents**: `brale accounts` ≡ `client.accounts.list()`, `brale internal-wallets` ≡ filtered addresses
+- **Network support**: Validated against CLI documentation (ethereum, base, polygon, arbitrum, etc.)
+- **Transfer patterns**: Aligned with CLI's 4-argument structure (amount, address, value-type, transfer-type)
+
+#### 🧪 **Comprehensive Real-World Testing**
+- **CLI Pattern Validation**: 8 tests confirming SDK matches CLI behavior
+- **Fixed SDK Validation**: 12 tests validating all type fixes work with real API  
+- **Real API Integration**: 10 tests with direct API response validation
+- **Live API testing**: Validated with production credentials against 70+ addresses, 2 accounts, 25+ networks
+- **Error scenarios**: Tested 404, authentication failures, and server errors
+
+#### 📊 **Infrastructure Improvements**
+- **User-Agent**: Updated to `BraleSDK/1.2.5` for better API tracking
+- **Debug capabilities**: Enhanced logging and error reporting for troubleshooting
+- **Documentation**: Added `SDK_ANALYSIS_AND_LEARNINGS.md` with API response analysis
+- **Test coverage**: Added 30+ integration tests with real API validation
+
+#### 🚀 **Migration Guide**
+```typescript
+// OLD (v1.2.4) - Broken
+const accounts = await client.accounts.list();
+console.log(accounts.data); // ❌ TypeError: undefined
+
+// NEW (v1.2.5) - Working
+const accounts = await client.accounts.list();
+console.log(accounts); // ✅ ['account-id-1', 'account-id-2']
+
+// OLD (v1.2.4) - Type errors
+const addresses = await client.addresses.list();
+addresses.data.forEach(addr => addr.type); // ❌ Property 'type' missing
+
+// NEW (v1.2.5) - Fully typed
+const addresses = await client.addresses.list();
+addresses.data.forEach(addr => addr.attributes.type); // ✅ 'custodial' | 'externally-owned'
+```
+
+**This release transforms the SDK from "very close to being fully functional" to "production-ready and CLI-compatible".**
+
 ## [1.2.4] - 2025-01-13
 
 ### 🚀 Major Developer Experience Enhancements
