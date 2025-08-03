@@ -57,7 +57,7 @@ describe('BraleAuth', () => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
-          'User-Agent': 'BraleSDK/1.2.4',
+          'User-Agent': 'BraleSDK/1.2.5',
         },
       });
     });
@@ -134,7 +134,7 @@ describe('BraleAuth', () => {
         timeout: 30000,
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'BraleSDK/1.2.4',
+          'User-Agent': 'BraleSDK/1.2.5',
         },
       });
 

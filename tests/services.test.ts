@@ -126,10 +126,13 @@ describe('Services', () => {
 
       const result = await service.list('account-1');
 
-      expect(mockAxios.get).toHaveBeenCalledWith('/accounts/account-1/addresses', {
+      expect(mockAxios.get).toHaveBeenCalledWith('/addresses', {
         params: {},
       });
-      expect(result.data).toHaveLength(1);
+      expect(result).toEqual({
+        data: [{ id: 'addr-1', address: '0x123...' }],
+        pagination: { hasMore: false, limit: 50, offset: 0, total: 1 }
+      });
     });
 
     it('should get address by ID', async () => {
@@ -143,7 +146,7 @@ describe('Services', () => {
 
       const result = await service.get('account-1', 'addr-1');
 
-      expect(mockAxios.get).toHaveBeenCalledWith('/accounts/account-1/addresses/addr-1');
+      expect(mockAxios.get).toHaveBeenCalledWith('/addresses/addr-1');
       expect(result.id).toBe('addr-1');
     });
 
@@ -163,7 +166,7 @@ describe('Services', () => {
 
       const result = await service.update('account-1', 'addr-1', { metadata: { updated: true } });
 
-      expect(mockAxios.patch).toHaveBeenCalledWith('/accounts/account-1/addresses/addr-1', {
+      expect(mockAxios.patch).toHaveBeenCalledWith('/addresses/addr-1', {
         metadata: { updated: true },
       });
       expect(result.id).toBe('addr-1');
