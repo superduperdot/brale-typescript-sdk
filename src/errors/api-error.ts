@@ -43,6 +43,21 @@ export class BraleAPIError extends Error {
     let code: string | undefined;
     let context: Record<string, unknown> | undefined;
 
+    // Provide more specific error messages for common HTTP status codes
+    if (status === 500) {
+      message = 'Internal server error - the API is experiencing issues';
+    } else if (status === 503) {
+      message = 'Service unavailable - the API is temporarily down';
+    } else if (status === 429) {
+      message = 'Rate limit exceeded - too many requests';
+    } else if (status === 401) {
+      message = 'Authentication failed - check your credentials';
+    } else if (status === 403) {
+      message = 'Access forbidden - insufficient permissions';
+    } else if (status === 404) {
+      message = 'Resource not found';
+    }
+
     if (data && typeof data === 'object') {
       const errorData = data as Record<string, unknown>;
       

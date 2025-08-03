@@ -122,10 +122,11 @@ export class BraleClient {
     const startTime = Date.now();
     
     try {
-      // Try to get the first account as a connectivity test
-      await this.httpClient.get('/accounts', {
-        params: { limit: 1 },
-      });
+      // First test basic connectivity with health endpoint
+      await this.httpClient.get('/health');
+      
+      // Then test authentication by getting access token
+      await this.auth.getAccessToken();
       
       const latencyMs = Date.now() - startTime;
       
@@ -137,6 +138,7 @@ export class BraleClient {
     } catch (error) {
       const latencyMs = Date.now() - startTime;
       
+      // Check if it's an authentication error
       if (error instanceof BraleAPIError && error.status === 401) {
         return {
           connected: true,
@@ -145,11 +147,23 @@ export class BraleClient {
         };
       }
       
-      return {
-        connected: false,
-        authenticated: false,
-        latencyMs,
-      };
+      // Check if we can at least reach the server
+      try {
+        await this.httpClient.get('/health');
+        // If health works but auth failed, it's an auth issue
+        return {
+          connected: true,
+          authenticated: false,
+          latencyMs,
+        };
+      } catch (healthError) {
+        // Can't reach server at all
+        return {
+          connected: false,
+          authenticated: false,
+          latencyMs,
+        };
+      }
     }
   }
 

@@ -23,7 +23,8 @@ export class CredentialValidator {
       recommendations.push('Use production credentials for live environments');
     }
 
-    if (clientSecret.length < 32) {
+    // Brale client secrets can be shorter than typical OAuth secrets
+    if (clientSecret.length < 16) {
       issues.push('Client secret appears to be too short');
       recommendations.push('Ensure you\'re using the full client secret from Brale dashboard');
     }

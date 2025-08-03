@@ -749,6 +749,10 @@ export const BraleClient = jest.fn().mockImplementation(() => ({
 
 The SDK handles OAuth 2.0 Client Credentials flow automatically with intelligent token management:
 
+**Authentication Endpoint**: `https://auth.brale.xyz/oauth2/token`  
+**Method**: HTTP Basic Authentication with Client Credentials Grant  
+**Status**: ✅ Fully functional and tested
+
 ### Automatic Token Handling
 
 ```typescript

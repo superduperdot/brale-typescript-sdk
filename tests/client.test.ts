@@ -121,17 +121,15 @@ describe('BraleClient', () => {
 
   describe('testConnection', () => {
     it('should return success for valid connection', async () => {
-      const mockResponse = {
-        data: { data: [] },
-        headers: {},
-      };
+      const mockHealthResponse = { data: { healthy: true } };
       
       const mockHttpClient = {
-        get: jest.fn().mockImplementation(() => 
-          new Promise(resolve => 
-            setTimeout(() => resolve(mockResponse), 1)
-          )
-        ),
+        get: jest.fn()
+          .mockImplementation(() => 
+            new Promise(resolve => 
+              setTimeout(() => resolve(mockHealthResponse), 1)
+            )
+          ), // /health endpoint with slight delay
         interceptors: {
           request: { use: jest.fn() },
           response: { use: jest.fn() },
@@ -139,9 +137,22 @@ describe('BraleClient', () => {
         defaults: { headers: {}, timeout: 30000 },
       };
       
+      // Mock the auth.getAccessToken method with slight delay
+      const mockAuth = {
+        getAccessToken: jest.fn().mockImplementation(() =>
+          new Promise(resolve => 
+            setTimeout(() => resolve('mock-token'), 1)
+          )
+        ),
+        createAuthenticatedClient: jest.fn().mockReturnValue(mockHttpClient),
+      };
+      
       mockedAxios.create.mockReturnValue(mockHttpClient as any);
       
       const client = new BraleClient(validConfig);
+      // Replace the auth instance with our mock
+      (client as any).auth = mockAuth;
+      
       const result = await client.testConnection();
       
       expect(result.connected).toBe(true);
