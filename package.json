@@ -1,6 +1,6 @@
 {
   "name": "@superduperdot/brale-sdk",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Unofficial TypeScript SDK for the Brale API - digital asset infrastructure platform",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
