@@ -6,8 +6,11 @@
 
 This SDK provides type-safe access to Brale's stablecoin issuance platform, enabling developers to integrate accounts, transfers, addresses, and automation flows with precision and excellent developer experience.
 
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue.svg)](https://www.typescriptlang.org/)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![Coverage](https://img.shields.io/badge/coverage-57%25-yellow.svg)]()
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 
 ## Table of Contents
 
@@ -55,11 +58,28 @@ Or with yarn:
 yarn add @superduperdot/brale-sdk
 ```
 
+### Build Output & Module Support
+
+This SDK is built with full support for modern JavaScript environments:
+
+- **CommonJS** (`require()`) - Full Node.js compatibility
+- **ES Modules** (`import`) - Modern bundlers (Webpack, Vite, Rollup)
+- **TypeScript** - Complete type definitions included
+- **Node.js 18+** - Optimized for current LTS versions
+
+The package includes:
+- `dist/cjs/` - CommonJS build
+- `dist/esm/` - ES Module build  
+- `dist/types/` - TypeScript declarations
+- `dist/index.mjs` - ES Module entry point
+
 > **Note**: This is an unofficial community SDK, not officially supported by Brale.
 
 ## Quick Start
 
 > 💡 **See the [`examples/`](./examples/) directory for complete working examples.**
+> 
+> 🚀 **Try the CLI Automation Manager**: `node examples/cli-automation-manager.js help`
 
 ```typescript
 import { BraleClient } from '@superduperdot/brale-sdk';
@@ -599,6 +619,60 @@ const allTransfers = await iterator.all(10); // Max 10 pages
 console.log(`Total transfers: ${allTransfers.length}`);
 ```
 
+## Idempotency
+
+The SDK automatically handles idempotency for create operations to prevent duplicate requests:
+
+### Automatic Idempotency Keys
+
+```typescript
+// SDK automatically generates idempotency keys for create operations
+const transfer1 = await client.transfers.create('account-id', {
+  amount: '100.00',
+  valueType: 'SBC',
+  destination: '0x123...',
+  // No idempotencyKey needed - auto-generated
+});
+
+// Retry the same operation - will return the same transfer
+const transfer2 = await client.transfers.create('account-id', {
+  amount: '100.00',
+  valueType: 'SBC',
+  destination: '0x123...',
+  // Same parameters = same auto-generated key
+});
+
+console.log(transfer1.id === transfer2.id); // true
+```
+
+### Custom Idempotency Keys
+
+```typescript
+// Provide your own idempotency key for full control
+const transfer = await client.transfers.create('account-id', {
+  amount: '100.00',
+  valueType: 'SBC',
+  destination: '0x123...',
+  idempotencyKey: 'my-unique-key-12345'
+});
+
+// Using the same key will return the same result
+const sameTransfer = await client.transfers.create('account-id', {
+  amount: '100.00',
+  valueType: 'SBC',
+  destination: '0x123...',
+  idempotencyKey: 'my-unique-key-12345'
+});
+```
+
+### Key Generation Rules
+
+- **Auto-generated keys**: Based on request parameters hash (SHA-256)
+- **Key length**: 32-128 characters (recommended: 36+ chars)
+- **Key format**: Alphanumeric with hyphens (e.g., `uuid-v4` format)
+- **Expiry**: Keys are valid for 24 hours
+- **Scope**: Keys are scoped per endpoint and account
+
 ## Using with Decimal.js
 
 The SDK uses `decimal.js` for all monetary calculations to ensure precision:
@@ -669,6 +743,60 @@ export const BraleClient = jest.fn().mockImplementation(() => ({
   },
   // ... other services
 }));
+```
+
+## Authentication & Token Management
+
+The SDK handles OAuth 2.0 Client Credentials flow automatically with intelligent token management:
+
+### Automatic Token Handling
+
+```typescript
+const client = new BraleClient({
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  environment: 'sandbox', // or 'production'
+});
+
+// Token is automatically obtained on first API call
+const accounts = await client.accounts.list();
+```
+
+### Token Refresh & Caching
+
+- **Automatic Refresh**: Tokens are refreshed automatically when they expire (401 responses)
+- **In-Memory Caching**: Tokens are cached in memory for the client instance lifetime
+- **Preemptive Refresh**: Tokens are refreshed before expiry to avoid interruptions
+- **Thread-Safe**: Multiple concurrent requests share the same token refresh process
+
+### Connection Testing
+
+```typescript
+// Test authentication and API connectivity
+const connection = await client.testConnection();
+console.log('Connected:', connection.connected);
+console.log('Authenticated:', connection.authenticated);
+console.log('Latency:', connection.latencyMs, 'ms');
+```
+
+### Token Storage Options
+
+For advanced use cases, you can implement custom token storage:
+
+```typescript
+import { TokenStorage } from '@superduperdot/brale-sdk';
+
+const customStorage = new TokenStorage({
+  storageType: 'file', // or 'memory'
+  encryptionKey: 'your-encryption-key',
+  filePath: './tokens.json'
+});
+
+const client = new BraleClient({
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  tokenStorage: customStorage
+});
 ```
 
 ## API Documentation
