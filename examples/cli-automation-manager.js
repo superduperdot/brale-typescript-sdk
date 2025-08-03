@@ -72,12 +72,19 @@ async function testConnection() {
     if (connection.connected && connection.authenticated) {
       success(`Connected to Brale ${config.environment} (${connection.latencyMs}ms)`);
       return true;
+    } else if (connection.connected && !connection.authenticated) {
+      warning(`Connected to API but authentication failed (${connection.latencyMs}ms)`);
+      error('Invalid credentials - please check your BRALE_CLIENT_ID and BRALE_CLIENT_SECRET');
+      return false;
     } else {
-      error('Failed to connect or authenticate');
+      error('Failed to connect to Brale API');
       return false;
     }
   } catch (err) {
     error(`Connection failed: ${err.message}`);
+    if (config.debug) {
+      console.error('Stack trace:', err.stack);
+    }
     return false;
   }
 }
@@ -346,6 +353,49 @@ async function main() {
     return;
   }
   
+  // Validate command arguments first
+  switch (command) {
+    case 'list':
+      if (!options['account-id']) {
+        error('--account-id is required for list command');
+        process.exit(1);
+      }
+      break;
+      
+    case 'create':
+      if (!options['account-id'] || !options['amount'] || !options['destination']) {
+        error('--account-id, --amount, and --destination are required for create command');
+        process.exit(1);
+      }
+      break;
+      
+    case 'status':
+      if (!options['automation-id'] || !options['account-id']) {
+        error('--automation-id and --account-id are required for status command');
+        process.exit(1);
+      }
+      break;
+      
+    case 'pause':
+      if (!options['automation-id'] || !options['account-id']) {
+        error('--automation-id and --account-id are required for pause command');
+        process.exit(1);
+      }
+      break;
+      
+    case 'resume':
+      if (!options['automation-id'] || !options['account-id']) {
+        error('--automation-id and --account-id are required for resume command');
+        process.exit(1);
+      }
+      break;
+      
+    default:
+      error(`Unknown command: ${command}`);
+      printUsage();
+      process.exit(1);
+  }
+  
   // Check for required environment variables
   if (config.clientId === 'your-client-id-here' || config.clientSecret === 'your-client-secret-here') {
     error('Please set BRALE_CLIENT_ID and BRALE_CLIENT_SECRET environment variables');
@@ -355,7 +405,7 @@ async function main() {
     process.exit(1);
   }
   
-  // Test connection first
+  // Test connection before executing commands
   const connected = await testConnection();
   if (!connected) {
     process.exit(1);
@@ -365,18 +415,10 @@ async function main() {
   try {
     switch (command) {
       case 'list':
-        if (!options['account-id']) {
-          error('--account-id is required for list command');
-          process.exit(1);
-        }
         await listAutomations(options['account-id']);
         break;
         
       case 'create':
-        if (!options['account-id'] || !options['amount'] || !options['destination']) {
-          error('--account-id, --amount, and --destination are required for create command');
-          process.exit(1);
-        }
         await createDailyTransferAutomation(
           options['account-id'],
           options['amount'],
@@ -385,34 +427,17 @@ async function main() {
         break;
         
       case 'status':
-        if (!options['automation-id'] || !options['account-id']) {
-          error('--automation-id and --account-id are required for status command');
-          process.exit(1);
-        }
         await getAutomationStatus(options['automation-id'], options['account-id']);
         break;
         
       case 'pause':
-        if (!options['automation-id'] || !options['account-id']) {
-          error('--automation-id and --account-id are required for pause command');
-          process.exit(1);
-        }
         const duration = options['duration'] ? parseInt(options['duration']) : undefined;
         await pauseAutomation(options['automation-id'], options['account-id'], duration);
         break;
         
       case 'resume':
-        if (!options['automation-id'] || !options['account-id']) {
-          error('--automation-id and --account-id are required for resume command');
-          process.exit(1);
-        }
         await resumeAutomation(options['automation-id'], options['account-id']);
         break;
-        
-      default:
-        error(`Unknown command: ${command}`);
-        printUsage();
-        process.exit(1);
     }
   } catch (err) {
     handleError('Command failed', err);
